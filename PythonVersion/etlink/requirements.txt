@@ -1,0 +1,4 @@
+luigi
+PyMySQL
+bs4
+pyspark

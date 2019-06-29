@@ -1,0 +1,12 @@
+# Application configuration
+APPLICATION_NAME = "etlink"
+EXTRACTION_OUTPUT = "extraction_outputs"
+SAVING_OUTPUT_FOLDER = "saving_outputs"
+SAVING_OUTPUT_FILE = "saving"
+HDFS_DEFAULT_NAME = "hdfs://localhost:9000"
+DB_NAME = "test"
+DB_TABLE = "data"
+DB_USER = "workflow"
+DB_PASSWORD = "exercise"
+MYSQL_HOST = "localhost"
+MYSQL_PORT = 3306
