@@ -1,3 +1,5 @@
+package base;
+
 public class Output {
 
   private OutputType type;

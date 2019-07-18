@@ -1,12 +1,11 @@
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
+import base.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -17,32 +16,29 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class Extraction implements Task {
-
-  private final String stageName = "extraction";
-
-  final static Logger logger = Logger.getLogger(Extraction.class);
+public class Extraction extends SimpleTask {
 
   private final String url;
-  private final Properties appProps;
 
   public Extraction(String url) throws IOException {
+    stageName = "extraction";
+    logger = Logger.getLogger(Extraction.class);
+
     this.url = url;
-    appProps = loadConfig();
+    try {
+      appProps = loadConfig();
+    } catch (IOException e) {
+      logger.error("Can't initialize Extraction task: can't load config");
+      throw e;
+    }
   }
 
-  private Properties loadConfig() throws IOException {
-    Properties appProps = new Properties();
-    InputStream configIS = Extraction.class.getClassLoader().getResourceAsStream("app.properties");
-    appProps.load(configIS);
-
-    return appProps;
-  }
-
+  @Override
   public List<Task> getDependencies() {
     return new ArrayList<>();
   }
 
+  @Override
   public TaskResultStatus run() {
     try {
       List<String> extractedLinks = extractLinks(url);
@@ -79,9 +75,10 @@ public class Extraction implements Task {
     FileSystem fs = FileSystem.get(URI.create(appProps.getProperty("hdfsPrefix")), conf);
 
     Path outputFileName = new Path(getOutput().getPath());
-    logger.info("Output file name: " + outputFileName);
+    logger.info("base.Output file name: " + outputFileName);
     if (fs.exists(outputFileName)) {
-      logger.warn("Output file " + outputFileName + " already exists, WILL NOT run Extraction task.");
+      logger.warn(
+          "base.Output file " + outputFileName + " already exists, WILL NOT run Extraction task.");
       return;
     }
 
@@ -94,20 +91,23 @@ public class Extraction implements Task {
     logger.info("Successfully writen " + links.size() + " strings.");
   }
 
+  @Override
   public Output getOutput() {
     final String fsname = appProps.getProperty("hdfsPrefix");
     final String username = System.getProperty("user.name");
     final String appName = appProps.getProperty("appName");
     final String appLang = appProps.getProperty("appLang");
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH'h'");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
     final String dateTime = sdf.format(new Date(System.currentTimeMillis()));
 
     final String stage = stageName;
     final String filename = url.replaceAll("[/:.]", "_");
 
-    final String outputPath = String.format(
-        "%s/users/%s/%s/%s/%s/%s/%s", fsname, username, appName, appLang, dateTime, stage, filename);
+    final String outputPath =
+        String.format(
+            "%s/users/%s/%s/%s/%s/%s/%s",
+            fsname, username, appName, appLang, dateTime, stage, filename);
 
     return new Output(OutputType.HDFS, outputPath);
   }

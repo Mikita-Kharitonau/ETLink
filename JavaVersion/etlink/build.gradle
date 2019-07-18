@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'application'
 }
 
 group 'com.mkharitonau.etlink'
@@ -17,4 +17,28 @@ dependencies {
     compile 'org.jsoup:jsoup:1.12.1'
     compile 'org.apache.hadoop:hadoop-client:3.2.0'
     compile 'log4j:log4j:1.2.17'
+    compile group: 'org.apache.spark', name: 'spark-core_2.12', version: '2.4.3'
+    compile group: 'org.apache.spark', name: 'spark-sql_2.12', version: '2.4.3'
+
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
+//    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.6.7'
+//    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.6.7'
+//    compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-scala_2.11', version: '2.6.7'
+
 }
+
+configurations {
+
+    all {
+
+        resolutionStrategy {
+            force 'com.fasterxml.jackson.core:jackson-core:2.6.7', 'com.fasterxml.jackson.core:jackson-databind:2.6.7', 'com.fasterxml.jackson.core:jackson-annotations:2.6.7'
+        }
+    }
+}
+
+application {
+    mainClassName = 'Main'
+}
+
+
