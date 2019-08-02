@@ -59,12 +59,18 @@ class Saving(PySparkTask):
 
         SparkSession(sc)
 
-        if len(self.input()) > 1:
-            # next line get rdd from each extraction file and unite them.
-            overall_rdd = functools.reduce(lambda x, y: self.from_input_to_rdd(sc, x).
-                                           union(self.from_input_to_rdd(sc, y)), self.input())
-        else:
-            overall_rdd = self.from_input_to_rdd(sc, self.input()[0])
+        overall_rdd = sc.emptyRDD()
+        for input in self.input():
+            overall_rdd = overall_rdd.union(
+                self.from_input_to_rdd(sc, input)
+            )
+
+        # if len(self.input()) > 1:
+        #     # next line get rdd from each extraction file and unite them.
+        #     overall_rdd = functools.reduce(lambda x, y: self.from_input_to_rdd(sc, x).
+        #                                    union(self.from_input_to_rdd(sc, y)), self.input())
+        # else:
+        #     overall_rdd = self.from_input_to_rdd(sc, self.input()[0])
 
         # convert to dataframe
         df = overall_rdd.map(lambda x: (x, 1)).\

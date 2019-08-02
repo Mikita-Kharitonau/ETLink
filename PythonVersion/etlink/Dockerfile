@@ -1,7 +1,8 @@
 FROM python:3
 
-ENV JAVA_HOME=/usr/local/java
-ENV SPARK_HOME=/usr/local/spark
+ENV JAVA_HOME=/home/kharivitalij/Software/jdk1.8.0_211
+ENV SPARK_HOME=/home/kharivitalij/Software/spark-2.4.3-bin-hadoop2.7
+ENV PYSPARK_PYTHON=python3
 
 ADD requirements.txt /
 RUN pip3 install -r requirements.txt

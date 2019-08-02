@@ -56,6 +56,7 @@ public class DbUpload extends SimpleTask {
       Dataset<Row> df = sqlContext.read().parquet(getDependencies().get(0).getOutput().getPath());
       df.show(20, false);
 
+      // TODO: create config variables for host, port, etc.
       String url = "jdbc:mysql://localhost:3306/etlink_java";
       Properties props = new Properties();
       props.put("user", "etlink");
