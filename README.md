@@ -1,6 +1,6 @@
 # ETLink 
 
-ETL links counter with multiple language versions like Python, Java and Scala in the plans.
+ETL links counter implementation in Python and Java.
 
 #### [Python version](https://github.com/Mikita-Kharitonau/ETLink/tree/master/PythonVersion/etlink) 
 Technology stack:
